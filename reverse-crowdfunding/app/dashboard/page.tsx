@@ -28,14 +28,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowUpCircle, TrendingUp } from "lucide-react";
 
-export const sendPayment = async (setIsPaid: (isPaid: boolean) => void) => {
+export const sendPayment = async (
+  amount: number,
+  setIsPaid: (isPaid: boolean) => void
+) => {
   const payload: PayCommandInput = {
     reference: "temp-id",
     to: "0xBbdf79C82D1eD8E7996198A97C19DE8e69e80ef4", // Test address
     tokens: [
       {
         symbol: Tokens.USDCE,
-        token_amount: tokenToDecimals(0.5, Tokens.USDCE).toString(),
+        token_amount: tokenToDecimals(amount, Tokens.USDCE).toString(),
       },
     ],
     description: "Pay as you make wishes",
@@ -56,13 +59,15 @@ export default function DashboardPage() {
   const [isPaid, setIsPaid] = useState(false);
 
   const handleContribute = () => {
+    const numericAmount = Number(amount);
+
     if (amount && !isNaN(Number(amount))) {
       setBalance(balance + Number(amount));
       setAmount("");
       setOpen(false);
     }
     if (!isPaid) {
-      sendPayment(setIsPaid);
+      sendPayment(numericAmount, setIsPaid);
     }
   };
 
