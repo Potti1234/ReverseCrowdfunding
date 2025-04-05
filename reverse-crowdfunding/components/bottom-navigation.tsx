@@ -15,12 +15,12 @@ export function BottomNavigation() {
       icon: Home,
     },
     {
-      name: "Discover",
+      name: "Wishes",
       href: "/projects",
       icon: Search,
     },
     {
-      name: "Create",
+      name: "Make Wishes",
       href: "/create",
       icon: PlusCircle,
     },
