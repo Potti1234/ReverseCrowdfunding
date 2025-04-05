@@ -1,9 +1,14 @@
 // src/components/ContractViewer.tsx
 import React, { useEffect, useState } from "react";
 import { useMyContract } from "../hooks/useMyContract";
+import { ethers } from "ethers";
 
-const ContractViewer: React.FC = () => {
-  const contract = useMyContract();
+const ContractViewer: React.FC = async () => {
+  const [loading, setLoading] = useState(false);
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+  const contract = useMyContract(signer);
+
   const [value, setValue] = useState<string>("");
 
   useEffect(() => {
