@@ -21,7 +21,7 @@ export default function ProfilePage () {
             <User className='h-12 w-12' />
           </AvatarFallback>
         </Avatar>
-        <h2 className='mt-4 text-xl font-bold'>Jane Smith</h2>
+        <h2 className='mt-4 text-xl font-bold'>Lukas</h2>
         <p className='text-muted-foreground'>Member since April 2023</p>
 
         <div className='flex gap-4 mt-4'>

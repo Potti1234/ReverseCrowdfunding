@@ -1,8 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -11,23 +17,54 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ArrowUpCircle, TrendingUp } from "lucide-react"
+} from "@/components/ui/dialog";
+import {
+  MiniKit,
+  tokenToDecimals,
+  Tokens,
+  PayCommandInput,
+} from "@worldcoin/minikit-js";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowUpCircle, TrendingUp } from "lucide-react";
+
+export const sendPayment = async (setIsPaid: (isPaid: boolean) => void) => {
+  const payload: PayCommandInput = {
+    reference: "temp-id",
+    to: "0xBbdf79C82D1eD8E7996198A97C19DE8e69e80ef4", // Test address
+    tokens: [
+      {
+        symbol: Tokens.USDCE,
+        token_amount: tokenToDecimals(0.5, Tokens.USDCE).toString(),
+      },
+    ],
+    description: "Pay as you make wishes",
+  };
+
+  const { finalPayload } = await MiniKit.commandsAsync.pay(payload);
+
+  if (finalPayload.status == "success") {
+    console.log("Payment success");
+    setIsPaid(true);
+  }
+};
 
 export default function DashboardPage() {
-  const [balance, setBalance] = useState(12500)
-  const [amount, setAmount] = useState("")
-  const [open, setOpen] = useState(false)
+  const [balance, setBalance] = useState(12500);
+  const [amount, setAmount] = useState("");
+  const [open, setOpen] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
 
   const handleContribute = () => {
     if (amount && !isNaN(Number(amount))) {
-      setBalance(balance + Number(amount))
-      setAmount("")
-      setOpen(false)
+      setBalance(balance + Number(amount));
+      setAmount("");
+      setOpen(false);
     }
-  }
+    if (!isPaid) {
+      sendPayment(setIsPaid);
+    }
+  };
 
   return (
     <div className="p-4 space-y-6">
@@ -36,11 +73,15 @@ export default function DashboardPage() {
       <Card className="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950">
         <CardHeader>
           <CardTitle className="text-lg">Community Fund</CardTitle>
-          <CardDescription>Current balance available for funding</CardDescription>
+          <CardDescription>
+            Current balance available for funding
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
-            <div className="text-3xl font-bold">${(balance / 100).toFixed(2)}</div>
+            <div className="text-3xl font-bold">
+              ${(balance / 100).toFixed(2)}
+            </div>
             <TrendingUp className="text-green-500" />
           </div>
 
@@ -51,7 +92,9 @@ export default function DashboardPage() {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Contribute to Fund</DialogTitle>
-                <DialogDescription>Add money to the community fund to support projects.</DialogDescription>
+                <DialogDescription>
+                  Add money to the community fund to support projects.
+                </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
@@ -87,7 +130,9 @@ export default function DashboardPage() {
                   <p className="text-sm font-medium">Contribution</p>
                   <p className="text-xs text-muted-foreground">2 minutes ago</p>
                 </div>
-                <div className="text-sm font-medium text-green-600 dark:text-green-400">+$25.00</div>
+                <div className="text-sm font-medium text-green-600 dark:text-green-400">
+                  +$25.00
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -98,13 +143,14 @@ export default function DashboardPage() {
                   <p className="text-sm font-medium">Contribution</p>
                   <p className="text-xs text-muted-foreground">1 hour ago</p>
                 </div>
-                <div className="text-sm font-medium text-green-600 dark:text-green-400">+$50.00</div>
+                <div className="text-sm font-medium text-green-600 dark:text-green-400">
+                  +$50.00
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }
-
